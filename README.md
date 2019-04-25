@@ -40,5 +40,6 @@ Qt信号/槽机制在Objective-C上的实现。
 
 ## 其他说明
 
+- 非线程安全，如果需要线程安全需求，可使用`dispatch_queue`操作。
 - 信号声明后，不需要实现。可以使用`NS_CLOSE_SIGNAL_WARN()`宏关闭未实现警告
 - 连接同时支持block方法，使用方法见Demo
