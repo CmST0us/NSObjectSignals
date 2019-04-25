@@ -3,7 +3,7 @@
 Qt信号/槽机制在Objective-C上的实现。
 
 ## 导入工程
-1. 为你的工程使用Xcode Workspace，并添加你的工程与本工程`NSObjectSignals/NSObjectSignals.xcodeproj`
+1. 为你的工程使用Xcode Workspace，并添加你的工程与本工程`NSObjectSignals/NSObjectSignals.xcodeproj`
 2. 在你的工程`Embedded Binaries`配置下添加本工程的framework
 3. `#import <NSObjectSignals/NSObject+SignalsSlots.h>`
 
