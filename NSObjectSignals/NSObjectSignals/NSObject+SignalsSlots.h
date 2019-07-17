@@ -13,6 +13,13 @@ NS_ASSUME_NONNULL_BEGIN
 #define NS_PROPERTY_SLOT(x) \
 - (void)x##DidChange:(id)newValue oldValue:(id)oldValue
 
+#define NS_SLOT void
+
+#define NS_SLOT_SELECTOR(x) @selector(x)
+
+#define NS_PROPERTY_SLOT_SELECTOR(x) @selector(x##DidChange:oldValue:)
+
+
 #define NS_SIGNAL(x) \
 - (void)signal_##x;
 
@@ -21,8 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 #define NS_CLOSE_SIGNAL_WARN(x) - (void)signal_##x { \
 \
 }
-
-#define NS_SLOT void
 
 
 @interface NSObject (SignalsSlots)
