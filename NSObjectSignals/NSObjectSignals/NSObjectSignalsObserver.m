@@ -20,6 +20,7 @@
 @interface NSObjectSignalsObserver ()
 @property (nonatomic, weak) NSObject *sender;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSObjectSignalsReceiver *> *> *signalMap;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *keypathSignalMap;
 @end
 
 @implementation NSObjectSignalsObserver
@@ -36,6 +37,13 @@
         _signalMap = [[NSMutableDictionary alloc] init];
     }
     return _signalMap;
+}
+
+- (NSMutableDictionary<NSString *,NSString *> *)keypathSignalMap {
+    if (_keypathSignalMap == nil) {
+        _keypathSignalMap = [[NSMutableDictionary alloc] init];
+    }
+    return _keypathSignalMap;
 }
 
 - (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
@@ -118,6 +126,29 @@
             }
         }
         [observers removeObjectsInArray:disconnectObjs];
+    }
+}
+
+- (void)listenKeypath:(NSString *)aKeypath pairWithSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
+    NSString *signalSelectorString = NSStringFromSelector(signal);
+    NSString *sel = [self.keypathSignalMap objectForKey:aKeypath];
+    if (sel != nil && [sel isKindOfClass:[NSString class]]) {
+        [observer removeObserver:self forKeyPath:aKeypath];
+    }
+    
+    [self.keypathSignalMap setObject:signalSelectorString forKey:aKeypath];
+    [self connectSignal:signal forObserver:observer slot:slot];
+    [self.sender addObserver:self forKeyPath:aKeypath options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    NSString *selStrig = [self.keypathSignalMap objectForKey:keyPath];
+    if (selStrig != nil && [selStrig isKindOfClass:[NSString class]]) {
+        SEL sel = NSSelectorFromString(selStrig);
+        if (sel) {
+            [self emitSignal:sel withParams:@[change[NSKeyValueChangeNewKey], change[NSKeyValueChangeOldKey]]];
+            return;
+        }
     }
 }
 

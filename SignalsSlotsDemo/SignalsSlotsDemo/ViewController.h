@@ -11,7 +11,9 @@
 
 @interface ViewController : UIViewController
 
-- (NS_SIGNAL)clickView;
-- (NS_SIGNAL)clickViewWithParam:(NSString *)p1 withParam:(NSString *)p2 withParam:(NSString *)p3;
+NS_SIGNAL(clickView);
+NS_SIGNAL(clickViewWithParam);
+NS_SIGNAL(changeS);
+
 @end
 
