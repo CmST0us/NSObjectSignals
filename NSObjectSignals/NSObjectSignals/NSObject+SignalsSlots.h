@@ -25,6 +25,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define NS_SIGNAL_SELECTOR(x) @selector(signal_##x)
 
+#define NS_USE_SIGNAL(x) - (void)signal_##x {\
+    [self emitSignal:NS_SIGNAL_SELECTOR(x) withParams:nil];\
+}
+
 #define NS_CLOSE_SIGNAL_WARN(x) - (void)signal_##x { \
 \
 }
