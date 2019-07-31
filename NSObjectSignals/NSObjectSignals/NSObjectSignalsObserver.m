@@ -89,6 +89,21 @@
     }
 }
 
+- (void)disconnectAllSignalForObserver:(NSObject *)observer {
+    NSArray *observers = self.signalMap.allValues;
+    if (observers != nil) {
+        for (NSMutableArray *receivers in observers) {
+            NSMutableArray *removeArray = [NSMutableArray array];
+            for (NSObjectSignalsReceiver *receive in receivers) {
+                if (receive.receiver == observer) {
+                    [removeArray addObject:receive];
+                }
+            }
+            [receivers removeObjectsInArray:removeArray];
+        }
+    }
+}
+
 - (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1 {
     NSString *signalSelString = NSStringFromSelector(signal);
     NSMutableArray *observers = self.signalMap[signalSelString];

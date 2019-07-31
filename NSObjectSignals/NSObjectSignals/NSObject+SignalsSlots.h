@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 #define NS_SIGNAL(x) \
-- (void)signal_##x;
+- (void)signal_##x
 
 #define NS_SIGNAL_SELECTOR(x) @selector(signal_##x)
 
@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
              forObserver:(NSObject *)observer;
 
 - (void)disconnectSignal:(SEL)signal;
+
+- (void)disconnectAllSignalForObserver:(NSObject *)observer;
 
 - (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1;
 

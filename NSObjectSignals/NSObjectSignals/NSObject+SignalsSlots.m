@@ -39,6 +39,10 @@ static char *signalObserverKey = "_K_SignalObserverKey_K_";
     [self.signalObserver disconnectSignal:signal forObserver:observer];
 }
 
+- (void)disconnectAllSignalForObserver:(NSObject *)observer {
+    [self.signalObserver disconnectAllSignalForObserver:observer];
+}
+
 - (void)emitSignal:(SEL)signal withParams:(NSArray *)obj1 {
     [self.signalObserver emitSignal:signal withParams:obj1];
 }
