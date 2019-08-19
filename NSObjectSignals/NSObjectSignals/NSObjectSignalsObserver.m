@@ -21,6 +21,7 @@
 @property (nonatomic, weak) NSObject *sender;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSObjectSignalsReceiver *> *> *signalMap;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *keypathSignalMap;
+@property (nonatomic, strong) NSLock *lock;
 @end
 
 @implementation NSObjectSignalsObserver
@@ -28,6 +29,7 @@
     self = [super init];
     if (self) {
         _sender = sender;
+        _lock = [[NSLock alloc] init];
     }
     return self;
 }
@@ -55,6 +57,7 @@
 }
 
 - (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(nullable SEL)slot blockSlot:(nullable BlockSlot)blockSlot {
+    [self.lock lock];
     NSString *signalSelString = NSStringFromSelector(signal);
     NSObjectSignalsReceiver *receiver = [[NSObjectSignalsReceiver alloc] init];
     receiver.signal = signal;
@@ -68,11 +71,14 @@
         [self.signalMap setValue:receivers forKey:signalSelString];
     }
     [receivers addObject:receiver];
+    [self.lock unlock];
 }
 
 - (void)disconnectSignal:(SEL)signal {
+    [self.lock lock];
     NSString *signalSelString = NSStringFromSelector(signal);
     [self.signalMap removeObjectForKey:signalSelString];
+    [self.lock unlock];
 }
 
 - (void)disconnectSignal:(SEL)signal forObserver:(NSObject *)observer {
@@ -85,7 +91,9 @@
                 [disconnectObjs addObject:receiver];
             }
         }
+        [self.lock lock];
         [observers removeObjectsInArray:disconnectObjs];
+        [self.lock unlock];
     }
 }
 
@@ -99,7 +107,9 @@
                     [removeArray addObject:receive];
                 }
             }
+            [self.lock lock];
             [receivers removeObjectsInArray:removeArray];
+            [self.lock unlock];
         }
     }
 }
@@ -109,7 +119,7 @@
     NSMutableArray *observers = self.signalMap[signalSelString];
     if (observers != NULL) {
         NSMutableArray *disconnectObjs = [NSMutableArray array];
-        for (NSObjectSignalsReceiver *receiver in observers) {
+          for (NSObjectSignalsReceiver *receiver in observers) {
             if (receiver.receiver == NULL) {
                 [disconnectObjs addObject:receiver];
             } else {
@@ -140,18 +150,17 @@
                 }
             }
         }
+        [self.lock lock];
         [observers removeObjectsInArray:disconnectObjs];
+        [self.lock unlock];
     }
 }
 
 - (void)listenKeypath:(NSString *)aKeypath pairWithSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
+    [self.lock lock];
     NSString *signalSelectorString = NSStringFromSelector(signal);
-    NSString *sel = [self.keypathSignalMap objectForKey:aKeypath];
-    if (sel != nil && [sel isKindOfClass:[NSString class]]) {
-        [observer removeObserver:self forKeyPath:aKeypath];
-    }
-    
     [self.keypathSignalMap setObject:signalSelectorString forKey:aKeypath];
+    [self.lock unlock];
     [self connectSignal:signal forObserver:observer slot:slot];
     [self.sender addObserver:self forKeyPath:aKeypath options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
 }
