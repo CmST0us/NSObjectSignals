@@ -13,7 +13,6 @@
 
 - (NS_SLOT)onViewClick;
 - (NS_SLOT)onViewClickWithParam:(NSString *)p1 withParam:(NSString *)p2 withParam:(NSString *)p3;
-NS_PROPERTY_SLOT(s);
 @end
 
 @implementation MyObserver
@@ -33,9 +32,6 @@ NS_PROPERTY_SLOT(s);
     NSLog(@"Multi param: p1->%@ p2->%@ p3->%@", p1, p2, p3);
 }
 
-- (void)sDidChange:(id)newValue oldValue:(id)oldValue {
-    NSLog(@"s Did change to %@ frome %@", newValue, oldValue);
-}
 @end
 
 @interface ViewController ()
@@ -46,7 +42,6 @@ NS_PROPERTY_SLOT(s);
 @implementation ViewController
 NS_CLOSE_SIGNAL_WARN(clickView);
 NS_CLOSE_SIGNAL_WARN(clickViewWithParam);
-NS_CLOSE_SIGNAL_WARN(changeS);
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -60,8 +55,6 @@ NS_CLOSE_SIGNAL_WARN(changeS);
     }];
     [self connectSignal:NS_SIGNAL_SELECTOR(clickViewWithParam) forObserver:self.o slot:@selector(onViewClickWithParam:withParam:withParam:)];
     
-    [self.o listenKeypath:@"s" pairWithSignal:NS_SIGNAL_SELECTOR(changeS) forObserver:self.o slot:@selector(sDidChange:oldValue:)];
-    
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -70,6 +63,7 @@ NS_CLOSE_SIGNAL_WARN(changeS);
     self.o.s = [NSString stringWithFormat:@"count %ld", self.count++];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self disconnectAllSignal];
         self.o = nil;
     });
 }

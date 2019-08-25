@@ -31,10 +31,6 @@ static char *signalObserverKey = "_K_SignalObserverKey_K_";
     [self.signalObserver connectSignal:signal forObserver:observer blockSlot:blockSlot];
 }
 
-- (void)disconnectSignal:(SEL)signal {
-    [self.signalObserver disconnectSignal:signal];
-}
-
 - (void)disconnectSignal:(SEL)signal forObserver:(NSObject *)observer {
     [self.signalObserver disconnectSignal:signal forObserver:observer];
 }
@@ -43,12 +39,13 @@ static char *signalObserverKey = "_K_SignalObserverKey_K_";
     [self.signalObserver disconnectAllSignalForObserver:observer];
 }
 
+- (void)disconnectAllSignal {
+    [self.signalObserver disconnectAllSignal];
+}
+
 - (void)emitSignal:(SEL)signal withParams:(NSArray *)obj1 {
     [self.signalObserver emitSignal:signal withParams:obj1];
 }
 
-- (void)listenKeypath:(NSString *)aKeypath pairWithSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
-    [self.signalObserver listenKeypath:aKeypath pairWithSignal:signal forObserver:observer slot:slot];
-}
 
 @end

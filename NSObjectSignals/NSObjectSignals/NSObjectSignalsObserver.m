@@ -20,7 +20,6 @@
 @interface NSObjectSignalsObserver ()
 @property (nonatomic, weak) NSObject *sender;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableArray<NSObjectSignalsReceiver *> *> *signalMap;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *keypathSignalMap;
 @property (nonatomic, strong) NSLock *lock;
 @end
 
@@ -39,13 +38,6 @@
         _signalMap = [[NSMutableDictionary alloc] init];
     }
     return _signalMap;
-}
-
-- (NSMutableDictionary<NSString *,NSString *> *)keypathSignalMap {
-    if (_keypathSignalMap == nil) {
-        _keypathSignalMap = [[NSMutableDictionary alloc] init];
-    }
-    return _keypathSignalMap;
 }
 
 - (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
@@ -71,13 +63,6 @@
         [self.signalMap setValue:receivers forKey:signalSelString];
     }
     [receivers addObject:receiver];
-    [self.lock unlock];
-}
-
-- (void)disconnectSignal:(SEL)signal {
-    [self.lock lock];
-    NSString *signalSelString = NSStringFromSelector(signal);
-    [self.signalMap removeObjectForKey:signalSelString];
     [self.lock unlock];
 }
 
@@ -114,7 +99,13 @@
     }
 }
 
-- (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1 {
+- (void)disconnectAllSignal {
+    [self.lock lock];
+    [self.signalMap removeAllObjects];
+    [self.lock unlock];
+}
+
+- (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)paramsArray {
     NSString *signalSelString = NSStringFromSelector(signal);
     NSMutableArray *observers = self.signalMap[signalSelString];
     if (observers != NULL) {
@@ -129,12 +120,12 @@
                     invocation.target = receiver.receiver;
                     invocation.selector = receiver.slot;
                     NSInteger paramtersCount = signature.numberOfArguments - 2;
-                    if (obj1 == nil) {
+                    if (paramsArray == nil) {
                         paramtersCount = MIN(0, paramtersCount);
                     } else {
-                        paramtersCount = MIN(obj1.count, paramtersCount);
+                        paramtersCount = MIN(paramsArray.count, paramtersCount);
                         for (int i = 0; i < paramtersCount; i++) {
-                            id obj = obj1[i];
+                            id obj = paramsArray[i];
                             if ([obj isKindOfClass:[NSNull class]]) continue;
                             [invocation setArgument:&obj atIndex:i + 2];
                         }
@@ -142,8 +133,8 @@
                     [invocation invoke];
                 }
                 if (receiver.blockSlot != NULL) {
-                    if (obj1 != nil) {
-                        receiver.blockSlot(obj1);
+                    if (paramsArray != nil) {
+                        receiver.blockSlot(paramsArray);
                     } else {
                         receiver.blockSlot(@[]);
                     }
@@ -153,26 +144,6 @@
         [self.lock lock];
         [observers removeObjectsInArray:disconnectObjs];
         [self.lock unlock];
-    }
-}
-
-- (void)listenKeypath:(NSString *)aKeypath pairWithSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
-    [self.lock lock];
-    NSString *signalSelectorString = NSStringFromSelector(signal);
-    [self.keypathSignalMap setObject:signalSelectorString forKey:aKeypath];
-    [self.lock unlock];
-    [self connectSignal:signal forObserver:observer slot:slot];
-    [self.sender addObserver:self forKeyPath:aKeypath options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:nil];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    NSString *selStrig = [self.keypathSignalMap objectForKey:keyPath];
-    if (selStrig != nil && [selStrig isKindOfClass:[NSString class]]) {
-        SEL sel = NSSelectorFromString(selStrig);
-        if (sel) {
-            [self emitSignal:sel withParams:@[change[NSKeyValueChangeNewKey], change[NSKeyValueChangeOldKey]]];
-            return;
-        }
     }
 }
 

@@ -25,13 +25,12 @@ typedef void(^BlockSlot)(NSArray *params);
 - (void)disconnectSignal:(SEL)signal
              forObserver:(NSObject *)observer;
 
-- (void)disconnectSignal:(SEL)signal;
-
 - (void)disconnectAllSignalForObserver:(NSObject *)observer;
+
+- (void)disconnectAllSignal;
 
 - (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1;
 
-- (void)listenKeypath:(NSString *)aKeypath pairWithSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot;
 @end
 
 NS_ASSUME_NONNULL_END

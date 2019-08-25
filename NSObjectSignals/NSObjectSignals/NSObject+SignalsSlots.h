@@ -10,14 +10,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define NS_PROPERTY_SLOT(x) \
-- (void)x##DidChange:(id)newValue oldValue:(id)oldValue
-
 #define NS_SLOT void
 
 #define NS_SLOT_SELECTOR(x) @selector(x)
-
-#define NS_PROPERTY_SLOT_SELECTOR(x) @selector(x##DidChange:oldValue:)
 
 
 #define NS_SIGNAL(x) \
@@ -47,16 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)disconnectSignal:(SEL)signal
              forObserver:(NSObject *)observer;
 
-- (void)disconnectSignal:(SEL)signal;
-
 - (void)disconnectAllSignalForObserver:(NSObject *)observer;
 
-- (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1;
+- (void)disconnectAllSignal;
 
-- (void)listenKeypath:(NSString *)aKeypath
-       pairWithSignal:(SEL)signal
-          forObserver:(NSObject *)observer
-                 slot:(SEL)slot;
+- (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1;
 
 @end
 
