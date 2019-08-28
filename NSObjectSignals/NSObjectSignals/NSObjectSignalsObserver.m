@@ -40,15 +40,15 @@
     return _signalMap;
 }
 
-- (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
-    [self connectSignal:signal forObserver:observer slot:slot blockSlot:NULL];
+- (void)_connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
+    [self _connectSignal:signal forObserver:observer slot:slot blockSlot:NULL];
 }
 
-- (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer blockSlot:(BlockSlot)blockSlot {
-    [self connectSignal:signal forObserver:observer slot:NULL blockSlot:blockSlot];
+- (void)_connectSignal:(SEL)signal forObserver:(NSObject *)observer blockSlot:(BlockSlot)blockSlot {
+    [self _connectSignal:signal forObserver:observer slot:NULL blockSlot:blockSlot];
 }
 
-- (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(nullable SEL)slot blockSlot:(nullable BlockSlot)blockSlot {
+- (void)_connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(nullable SEL)slot blockSlot:(nullable BlockSlot)blockSlot {
     [self.lock lock];
     NSString *signalSelString = NSStringFromSelector(signal);
     NSObjectSignalsReceiver *receiver = [[NSObjectSignalsReceiver alloc] init];
@@ -66,7 +66,7 @@
     [self.lock unlock];
 }
 
-- (void)disconnectSignal:(SEL)signal forObserver:(NSObject *)observer {
+- (void)_disconnectSignal:(SEL)signal forObserver:(NSObject *)observer {
     NSString *signalSelString = NSStringFromSelector(signal);
     NSMutableArray *observers = self.signalMap[signalSelString];
     if (observers != NULL) {
@@ -82,7 +82,7 @@
     }
 }
 
-- (void)disconnectAllSignalForObserver:(NSObject *)observer {
+- (void)_disconnectAllSignalForObserver:(NSObject *)observer {
     NSArray *observers = self.signalMap.allValues;
     if (observers != nil) {
         for (NSMutableArray *receivers in observers) {
@@ -99,13 +99,13 @@
     }
 }
 
-- (void)disconnectAllSignal {
+- (void)_disconnectAllSignal {
     [self.lock lock];
     [self.signalMap removeAllObjects];
     [self.lock unlock];
 }
 
-- (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)paramsArray {
+- (void)_emitSignal:(SEL)signal withParams:(nullable NSArray *)paramsArray {
     NSString *signalSelString = NSStringFromSelector(signal);
     NSMutableArray *observers = self.signalMap[signalSelString];
     if (observers != NULL) {

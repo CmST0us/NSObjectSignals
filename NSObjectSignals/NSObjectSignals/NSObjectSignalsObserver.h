@@ -14,22 +14,22 @@ typedef void(^BlockSlot)(NSArray *params);
 @interface NSObjectSignalsObserver : NSObject
 - (instancetype)initWithSender:(NSObject *)sender;
 
-- (void)connectSignal:(SEL)signal
+- (void)_connectSignal:(SEL)signal
           forObserver:(NSObject *)observer
                  slot:(SEL)slot;
 
-- (void)connectSignal:(SEL)signal
+- (void)_connectSignal:(SEL)signal
           forObserver:(NSObject *)observer
             blockSlot:(BlockSlot)blockSlot;
 
-- (void)disconnectSignal:(SEL)signal
+- (void)_disconnectSignal:(SEL)signal
              forObserver:(NSObject *)observer;
 
-- (void)disconnectAllSignalForObserver:(NSObject *)observer;
+- (void)_disconnectAllSignalForObserver:(NSObject *)observer;
 
-- (void)disconnectAllSignal;
+- (void)_disconnectAllSignal;
 
-- (void)emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1;
+- (void)_emitSignal:(SEL)signal withParams:(nullable NSArray *)obj1;
 
 @end
 

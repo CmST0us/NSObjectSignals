@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <NSObjectSignals/NSObject+SignalsSlots.h>
 
-@interface ViewController : UIViewController
-
-NS_SIGNAL(clickView);
-NS_SIGNAL(clickViewWithParam);
-NS_SIGNAL(changeS);
-
+@signals ViewControllerSignals
+- (void)clickView;
+- (void)clickViewWithParam;
+- (void)changeS;
 @end
 
+@interface ViewController : UIViewController
+
+@end

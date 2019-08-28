@@ -24,27 +24,27 @@ static char *signalObserverKey = "_K_SignalObserverKey_K_";
 }
 
 - (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer slot:(SEL)slot {
-    [self.signalObserver connectSignal:signal forObserver:observer slot:slot];
+    [self.signalObserver _connectSignal:signal forObserver:observer slot:slot];
 }
 
 - (void)connectSignal:(SEL)signal forObserver:(NSObject *)observer blockSlot:(BlockSlot)blockSlot {
-    [self.signalObserver connectSignal:signal forObserver:observer blockSlot:blockSlot];
+    [self.signalObserver _connectSignal:signal forObserver:observer blockSlot:blockSlot];
 }
 
 - (void)disconnectSignal:(SEL)signal forObserver:(NSObject *)observer {
-    [self.signalObserver disconnectSignal:signal forObserver:observer];
+    [self.signalObserver _disconnectSignal:signal forObserver:observer];
 }
 
 - (void)disconnectAllSignalForObserver:(NSObject *)observer {
-    [self.signalObserver disconnectAllSignalForObserver:observer];
+    [self.signalObserver _disconnectAllSignalForObserver:observer];
 }
 
 - (void)disconnectAllSignal {
-    [self.signalObserver disconnectAllSignal];
+    [self.signalObserver _disconnectAllSignal];
 }
 
 - (void)emitSignal:(SEL)signal withParams:(NSArray *)obj1 {
-    [self.signalObserver emitSignal:signal withParams:obj1];
+    [self.signalObserver _emitSignal:signal withParams:obj1];
 }
 
 

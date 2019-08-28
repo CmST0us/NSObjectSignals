@@ -11,6 +11,7 @@
 		4F99BAF82271932000059024 /* NSObject+SignalsSlots.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F99BAF62271932000059024 /* NSObject+SignalsSlots.m */; };
 		4F99BAFB22719BEC00059024 /* NSObjectSignalsObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F99BAF922719BEC00059024 /* NSObjectSignalsObserver.h */; };
 		4F99BAFC22719BEC00059024 /* NSObjectSignalsObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F99BAFA22719BEC00059024 /* NSObjectSignalsObserver.m */; };
+		4FB5C6AB2316DD370003649B /* NSObjectSignals.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FB5C6AA2316DD1A0003649B /* NSObjectSignals.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		4F99BAF62271932000059024 /* NSObject+SignalsSlots.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SignalsSlots.m"; sourceTree = "<group>"; };
 		4F99BAF922719BEC00059024 /* NSObjectSignalsObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSObjectSignalsObserver.h; sourceTree = "<group>"; };
 		4F99BAFA22719BEC00059024 /* NSObjectSignalsObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSObjectSignalsObserver.m; sourceTree = "<group>"; };
+		4FB5C6AA2316DD1A0003649B /* NSObjectSignals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSObjectSignals.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				4F99BAEC2271918A00059024 /* Info.plist */,
+				4FB5C6AA2316DD1A0003649B /* NSObjectSignals.h */,
 				4F99BAF52271932000059024 /* NSObject+SignalsSlots.h */,
 				4F99BAF62271932000059024 /* NSObject+SignalsSlots.m */,
 				4F99BAF922719BEC00059024 /* NSObjectSignalsObserver.h */,
@@ -69,6 +72,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F99BAFB22719BEC00059024 /* NSObjectSignalsObserver.h in Headers */,
+				4FB5C6AB2316DD370003649B /* NSObjectSignals.h in Headers */,
 				4F99BAF72271932000059024 /* NSObject+SignalsSlots.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
